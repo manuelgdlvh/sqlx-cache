@@ -2,10 +2,10 @@ use std::any::Any;
 use std::error::Error;
 use std::marker::PhantomData;
 use std::sync::Arc;
-use std::sync::mpsc::Sender;
+use std::sync::mpsc::{Sender, SendError};
 
 use dashmap::DashMap;
-use sqlx::{ Pool};
+use sqlx::Pool;
 
 use crate::cache_manager::CacheManager;
 use crate::cache_task::CacheTask;
@@ -28,9 +28,9 @@ where
     pub fn new(db_cache_config: DbCacheConfig, tx: Sender<CacheTask>) -> Self {
         Self { db_cache_config, tx, _phantom: Default::default() }
     }
-    pub fn invalidate(&self, key: DBC::Key) {
+    pub fn invalidate(&self, key: DBC::Key) -> Result<(), SendError<CacheTask>> {
         let task = CacheTask::invalidation(self.db_cache_config.expires_in(), self.db_cache_config.cache_id(), Box::new(key));
-        self.tx.send(task).unwrap();
+        self.tx.send(task)
     }
 }
 
@@ -71,8 +71,13 @@ where
                     }
                 };
 
+
                 self.db_storage.insert(key.clone(), val.clone());
-                self.cache_event_processor.invalidate(key.clone());
+                if let Err(err) = self.cache_event_processor.invalidate(key.clone()) {
+                    println!("Error sending invalidate cache task caused by: {err}");
+                    self.db_storage.remove(key);
+                }
+
                 Some(val)
             }
             Some(val) => {
