@@ -1,0 +1,38 @@
+[package]
+name = "sqlx-cache"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sqlx = { version = "0.8.2" }
+dashmap = "6.1.0"
+
+[features]
+runtime-tokio = ["sqlx/runtime-tokio"]
+runtime-async-std = ["sqlx/runtime-async-std"]
+
+postgres = ["sqlx/postgres"]
+mysql = ["sqlx/mysql"]
+sqlite = ["sqlx/sqlite"]
+
+tokio-postgres = ["runtime-tokio", "postgres"]
+
+
+
+[dev-dependencies]
+sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres"] }
+tokio = { version = "1.42.0", features = ["rt-multi-thread", "macros"] }
+rstest = "0.22.0"
+rstest_reuse = "0.7.0"
+mockall = "0.13.0"
+testcontainers = { version = "0.21.1", features = ["blocking"] }
+ctor = "0.2.8"
+
+
+[lib]
+name = "lib"
+path = "src/lib/lib.rs"
+
+[[test]]
+name = "integration_tests"
+path = "tests/integration/mod.rs"
