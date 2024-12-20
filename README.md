@@ -1,6 +1,7 @@
 # SQLX Cache
 
 ## Tasks
+- [ ] Improve delayed execution of cache events 
 - [ ] Change println! calls to Logger trait
 - [ ] Add integration tests for PUT operation
 - [ ] Add unitary tests
