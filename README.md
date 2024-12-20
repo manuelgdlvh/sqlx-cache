@@ -11,6 +11,9 @@
 ## Overview
 
 The SQLX Cache is a caching system designed for efficient storage and retrieval of entities in a database. It leverages the SQLX crate to perform database operations, providing support for both PUT and GET operations. This cache system allows you to set custom expiration times for cache entries, enabling automatic cleanup of expired data to prevent memory bloat and ensure that the cache remains fresh and accurate. The cache management system is flexible and can be integrated into your application to enhance performance by reducing database load and improving response times for frequently accessed data.
+
+Event listeners, such as those for expiration, are implemented through the Cache Manager. This approach uses generic input parameters, when needed, with the Any trait (Cache Task) to handle cache events. The design avoids using an Arc-Inner shareable struct within the DbCache for delayed callbacks, aiming to minimize pointer indirections across all operations. Pointer indirections are introduced only once per cache event (if necessary), based on the assumption that core operations will be more frequent than entry expirations or any future cache events.
+
 ## Key Features
 1. SQLX Integration: Seamlessly integrates with the SQLX crate for database interactions.
 2. Automatic Cache Cleanup: Once an entry expires, it is automatically removed from the cache, maintaining memory efficiency.
