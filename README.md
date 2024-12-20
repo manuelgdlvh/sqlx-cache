@@ -1,4 +1,11 @@
 # SQLX Cache
+
+## Tasks
+- [ ] Change println! calls to Logger trait
+- [ ] Add integration tests for PUT operation
+- [ ] Add unitary tests
+- [ ] Add / Improve observability
+
 ## Overview
 
 The SQLX Cache is a caching system designed for efficient storage and retrieval of entities in a database. It leverages the SQLX crate to perform database operations, providing support for both PUT and GET operations. This cache system allows you to set custom expiration times for cache entries, enabling automatic cleanup of expired data to prevent memory bloat and ensure that the cache remains fresh and accurate. The cache management system is flexible and can be integrated into your application to enhance performance by reducing database load and improving response times for frequently accessed data.
